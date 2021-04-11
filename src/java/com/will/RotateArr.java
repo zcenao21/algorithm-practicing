@@ -3,7 +3,7 @@ package com.will;
 public class RotateArr {
     public static void main(String[] args) {
         Solution9 solution = new Solution9();
-        int[] nums = new int[]{2};
+        int[] nums = new int[]{2,3,4,5,6,7,8,9,10,0};
         System.out.println(solution.findMin(nums));
     }
 }
