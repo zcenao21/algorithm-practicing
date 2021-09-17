@@ -1,6 +1,5 @@
-package com.will;
+package com.will.practice;
 
-import java.util.Queue;
 import java.util.Stack;
 
 public class HistogramArea {

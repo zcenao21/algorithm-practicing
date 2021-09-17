@@ -1,4 +1,4 @@
-package com.will;
+package com.will.practice;
 
 // 乐团站位问题
 //https://leetcode-cn.com/problems/SNJvJP/

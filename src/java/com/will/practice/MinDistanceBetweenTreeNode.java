@@ -1,6 +1,4 @@
-package com.will;
-
-import java.util.Stack;
+package com.will.practice;
 
 public class MinDistanceBetweenTreeNode {
     public static void main(String[] args){
