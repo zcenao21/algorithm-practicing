@@ -1,4 +1,4 @@
-package com.will;
+package com.will.practice;
 
 public class FindSmallestInArr {
     public static void main(String[] args){

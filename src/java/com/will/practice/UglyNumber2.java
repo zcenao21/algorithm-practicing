@@ -1,4 +1,4 @@
-package com.will;
+package com.will.practice;
 
 import java.util.HashSet;
 import java.util.PriorityQueue;
