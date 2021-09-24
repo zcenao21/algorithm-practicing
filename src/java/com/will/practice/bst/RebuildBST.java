@@ -1,6 +1,7 @@
-package com.will;
+package com.will.practice.bst;
 
 //  重建二叉树
+// https://www.nowcoder.com/practice/8a19cbe657394eeaac2f6ea9b0f6fcf6?tpId=188&&tqId=38591&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking
 public class RebuildBST {
     public TreeNode reConstructBinaryTree(int [] pre,int [] vin) {
         if(pre.length<1||vin.length<1){

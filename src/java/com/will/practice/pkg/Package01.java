@@ -1,4 +1,4 @@
-package com.will.practice;
+package com.will.practice.pkg;
 
 import java.util.HashMap;
 import java.util.Map;

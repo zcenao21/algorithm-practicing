@@ -14,10 +14,6 @@ public class Greedy {
 //        if(n<1||n!=startEnd.length) return -1;
 //
 //        PriorityQueue<Integer> minStack = new PriorityQueue<>();
-//
-//
-//
-//
 //    }
 
     public static void main(String[] args) {
