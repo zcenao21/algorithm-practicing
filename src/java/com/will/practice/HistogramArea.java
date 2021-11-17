@@ -9,14 +9,14 @@ public class HistogramArea {
         Solution3 solution3 = new Solution3();
 //        int[] a = {9,6,8,8,5,6,3};
         int[] a = {0,1,0,2,1,0,1,3,2,1};
-        System.out.println(solution.trap(a));
+//        System.out.println(solution.trap(a));
         System.out.println(solution2.trap(a));
         System.out.println(solution3.trap(a));
     }
 }
 
 // 每到一个节点计算左右最大值，得到最大蓄水量,复杂度O(n^2)
-class Solution {
+class Solution1 {
     public int trap(int[] height) {
         int area = 0;
         for(int i=1;i<height.length;i++){
