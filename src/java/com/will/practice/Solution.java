@@ -95,7 +95,7 @@ public class Solution {
 //        List<List<Integer>> result = s.combinationSum(new int[]{2}, 1);
 //        List<List<Integer>> result = s.combinationSum(new int[]{1}, 1);
 //        boolean result = s.canPartitionKSubsets(new int[]{4,3,2,3,5,2,1},4);
-        boolean result = s.canPartitionKSubsets2(new int[]{7628,3147,7137,2578,7742,2746,4264,7704,9532,9679,8963,3223,2133,7792,5911,3979},6);
+        boolean result = s.canPartitionKSubsets(new int[]{7628,3147,7137,2578,7742,2746,4264,7704,9532,9679,8963,3223,2133,7792,5911,3979},6);
         System.out.println(result);
 //        List<String> result = s.restoreIpAddresses("1111");
 //        List<String> result = s.restoreIpAddresses("0279245587303");
@@ -160,7 +160,6 @@ public class Solution {
         
         Boolean result = canPartitionKSubsetsInner(nums,0, parts,avg);
         return result;
-        
     }
 
     private Boolean canPartitionKSubsetsInner(int[] nums, int curr, int[] parts,int avg) {
@@ -176,10 +175,9 @@ public class Solution {
         boolean result =false;
         for(int i=0;i<parts.length;i++){
             if(parts[i]-nums[curr]>=0){
-                int temp = parts[i];
                 parts[i]=parts[i]-nums[curr];
                 result=result|canPartitionKSubsetsInner(nums,curr+1,parts,avg);
-                parts[i]=temp;
+                parts[i]+=nums[curr];
                 if(result){
                     return true;
                 }
