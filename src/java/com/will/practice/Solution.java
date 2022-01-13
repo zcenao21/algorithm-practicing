@@ -1,6 +1,5 @@
 package com.will.practice;
 
-import sun.awt.X11.XSetWindowAttributes;
 
 import javax.swing.*;
 import java.lang.reflect.Array;
@@ -95,7 +94,8 @@ public class Solution {
 //        List<List<Integer>> result = s.combinationSum(new int[]{2,3,5}, 8);
 //        List<List<Integer>> result = s.combinationSum(new int[]{2}, 1);
 //        List<List<Integer>> result = s.combinationSum(new int[]{1}, 1);
-        List<List<Integer>> result = s.permute(new int[]{1,2,3,4});
+//        boolean result = s.canPartitionKSubsets(new int[]{4,3,2,3,5,2,1},4);
+        boolean result = s.canPartitionKSubsets2(new int[]{7628,3147,7137,2578,7742,2746,4264,7704,9532,9679,8963,3223,2133,7792,5911,3979},6);
         System.out.println(result);
 //        List<String> result = s.restoreIpAddresses("1111");
 //        List<String> result = s.restoreIpAddresses("0279245587303");
@@ -137,68 +137,112 @@ public class Solution {
 //        {0,0,0}};
 
     }
-//
-//    public List<List<Integer>> permute(int[] nums) {
-//        List<List<Integer>> result = new ArrayList<>();
-//        if (nums.length == 0) {
-//            return result;
-//        }
-//        if (nums.length == 1) {
-//            List<Integer> partResult = new ArrayList<>();
-//            partResult.add(nums[0]);
-//            result.add(partResult);
-//            return result;
-//        }
-//        for (int i = 0; i < nums.length; i++) {
-//            List<Integer> copyPart = new ArrayList<>();
-//            for (int k = 0; k < nums.length; k++) {
-//                if (k == i) {
-//                    continue;
-//                }
-//                copyPart.add(nums[k]);
-//            }
-//            int[] permuteResult = Arrays.stream(copyPart.toArray(new Integer[]{})).mapToInt(Integer::valueOf).toArray();
-//            List<List<Integer>> partResult = permute(permuteResult);
-//            if (partResult.size() > 0) {
-//                for (int j = 0; j < partResult.size(); j++) {
-//                    List<Integer> onePart = new ArrayList<>();
-//                    onePart.add(nums[i]);
-//                    onePart.addAll(partResult.get(j));
-//                    result.add(onePart);
-//                }
-//            }
-//        }
-//        return result;
-//    }
 
-
-    List<List<Integer>> res = new ArrayList<>();
-    public List<List<Integer>> permute(int[] nums) {
-        permuteInner(nums, 0);
-        return res;
+    public boolean canPartitionKSubsets(int[] nums, int k) {
+        if(nums.length<1) return false;
+        long sum = 0;
+        for(int i=0;i<nums.length;i++){
+            sum+=nums[i];
+        }
+        
+        // 确定可以分成k等分
+        int avg = (int)sum/k;
+        if(sum%avg!=0) return false;
+        
+        int[] parts = new int[k];
+        Arrays.fill(parts,avg);
+        Arrays.sort(nums);
+        for(int i=1;i<nums.length/2;i+=2){
+            int temp=nums[i];
+            nums[i]=nums[nums.length-1-i];
+            nums[nums.length-1-i]=temp;
+        }
+        
+        Boolean result = canPartitionKSubsetsInner(nums,0, parts,avg);
+        return result;
+        
     }
 
-    private void permuteInner(int[] nums, int curr) {
+    private Boolean canPartitionKSubsetsInner(int[] nums, int curr, int[] parts,int avg) {
         if(curr==nums.length){
-            List<Integer> resOne = new ArrayList<>();
-            for(int k=0;k<nums.length;k++){
-                resOne.add(nums[k]);
+            for(int j=0;j<parts.length;j++){
+                if(parts[j]!=0){
+                    return false;
+                }
             }
-            res.add(resOne);
-            return;
+            return true;
         }
-        for(int i=curr;i<nums.length;i++){
-            swap(nums,curr,i);
-            permuteInner(nums,curr+1);
-            swap(nums,i,curr);
+        if(nums[curr]>avg) return false;
+        boolean result =false;
+        for(int i=0;i<parts.length;i++){
+            if(parts[i]-nums[curr]>=0){
+                int temp = parts[i];
+                parts[i]=parts[i]-nums[curr];
+                result=result|canPartitionKSubsetsInner(nums,curr+1,parts,avg);
+                parts[i]=temp;
+                if(result){
+                    return true;
+                }
+            }
         }
+        return false;
     }
-
-    private void swap(int[] nums, int curr, int i) {
-        int temp = nums[curr];
-        nums[curr]=nums[i];
-        nums[i]=temp;
+    
+    int[] bucket;
+	boolean[] used;
+    public boolean canPartitionKSubsets2(int[] nums, int k) {
+    	bucket = new int[k];
+    	used = new boolean[nums.length];
+    	int sum = 0;
+    	for(int i = 0; i < nums.length; i++) {
+    		sum += nums[i];
+    	}
+    	if(sum < k || sum % k != 0) {
+    		return false;
+    	}
+    	int target = sum / k;
+    	int len = nums.length;
+    	
+    	Arrays.sort(nums);
+    	int temp = 0;
+    	for(int i = 0; i < len/2; i++) {
+    		temp = nums[i];
+    		nums[i] = nums[len - 1 - i];
+    		nums[len - i - 1] = temp;
+    	}
+    	
+    	return backtrack(k, 0, nums, 0, used, target);
     }
-
+    
+    //每个桶判断自己是否应该装那个数字
+    boolean backtrack(int k, int bucket, 
+    	    int[] nums, int start, boolean[] used, int target) {
+    	if(k == 0) {
+    		//所有桶都满了
+    		return true;
+    	}
+    	if(bucket == target) {
+    		return backtrack(k - 1, 0, nums, 0, used, target);
+    	}
+    	
+    	for(int i = start; i < nums.length; i++) {
+    		if(used[i]) {
+    			continue;
+    		}
+    		if(nums[i] + bucket > target) {
+    			continue;
+    		}
+    		used[i] = true;
+    		bucket += nums[i];
+    		if(backtrack(k, bucket, nums, i + 1, used, target)) {
+    			return true;
+    		}
+    		//撤销选择
+    		used[i] = false;
+    		bucket -= nums[i];
+    	}
+    	return false;
+    }
+    
 
 }
