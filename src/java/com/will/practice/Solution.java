@@ -94,8 +94,9 @@ public class Solution {
 //        List<List<Integer>> result = s.combinationSum(new int[]{2,3,5}, 8);
 //        List<List<Integer>> result = s.combinationSum(new int[]{2}, 1);
 //        List<List<Integer>> result = s.combinationSum(new int[]{1}, 1);
-//        boolean result = s.canPartitionKSubsets(new int[]{4,3,2,3,5,2,1},4);
-        boolean result = s.canPartitionKSubsets(new int[]{7628,3147,7137,2578,7742,2746,4264,7704,9532,9679,8963,3223,2133,7792,5911,3979},6);
+//        boolean result = s.canPartitionKSubsets(new int[]{5,2,3,3,3,4}, 4);
+//        boolean result = s.canPartitionKSubsets(new int[]{605,454,322,218,8,19,651,2220,175,710,2666,350,252,2264,327,1843},4);
+        int result = s.minDistance("horse","ros");
         System.out.println(result);
 //        List<String> result = s.restoreIpAddresses("1111");
 //        List<String> result = s.restoreIpAddresses("0279245587303");
@@ -138,108 +139,31 @@ public class Solution {
 
     }
 
-    public boolean canPartitionKSubsets(int[] nums, int k) {
-        if(nums.length<1) return false;
-        long sum = 0;
-        for(int i=0;i<nums.length;i++){
-            sum+=nums[i];
+    public int minDistance(String word1, String word2) {
+        if(word1==null||word2==null||word1.length()==0||word2.length()==0){
+            if(word1==null||word2==null){
+                return 0;
+            }else if(word1==null){
+                return word2.length();
+            }else if(word2==null){
+                return word1.length();
+            }else{
+                return 0;
+            }
         }
-        
-        // 确定可以分成k等分
-        int avg = (int)sum/k;
-        if(sum%avg!=0) return false;
-        
-        int[] parts = new int[k];
-        Arrays.fill(parts,avg);
-        Arrays.sort(nums);
-        for(int i=1;i<nums.length/2;i+=2){
-            int temp=nums[i];
-            nums[i]=nums[nums.length-1-i];
-            nums[nums.length-1-i]=temp;
-        }
-        
-        Boolean result = canPartitionKSubsetsInner(nums,0, parts,avg);
-        return result;
-    }
 
-    private Boolean canPartitionKSubsetsInner(int[] nums, int curr, int[] parts,int avg) {
-        if(curr==nums.length){
-            for(int j=0;j<parts.length;j++){
-                if(parts[j]!=0){
-                    return false;
-                }
-            }
-            return true;
+        // 确保word1更短
+        if(word1.length()>word2.length()){
+            String temp = word1;
+            word1=word2;
+            word2=temp;
         }
-        if(nums[curr]>avg) return false;
-        boolean result =false;
-        for(int i=0;i<parts.length;i++){
-            if(parts[i]-nums[curr]>=0){
-                parts[i]=parts[i]-nums[curr];
-                result=result|canPartitionKSubsetsInner(nums,curr+1,parts,avg);
-                parts[i]+=nums[curr];
-                if(result){
-                    return true;
-                }
-            }
+
+        Queue<String> q = new LinkedList<>();
+        q.add(word1);
+        while(q.size()>0){
+
         }
-        return false;
-    }
-    
-    int[] bucket;
-	boolean[] used;
-    public boolean canPartitionKSubsets2(int[] nums, int k) {
-    	bucket = new int[k];
-    	used = new boolean[nums.length];
-    	int sum = 0;
-    	for(int i = 0; i < nums.length; i++) {
-    		sum += nums[i];
-    	}
-    	if(sum < k || sum % k != 0) {
-    		return false;
-    	}
-    	int target = sum / k;
-    	int len = nums.length;
-    	
-    	Arrays.sort(nums);
-    	int temp = 0;
-    	for(int i = 0; i < len/2; i++) {
-    		temp = nums[i];
-    		nums[i] = nums[len - 1 - i];
-    		nums[len - i - 1] = temp;
-    	}
-    	
-    	return backtrack(k, 0, nums, 0, used, target);
-    }
-    
-    //每个桶判断自己是否应该装那个数字
-    boolean backtrack(int k, int bucket, 
-    	    int[] nums, int start, boolean[] used, int target) {
-    	if(k == 0) {
-    		//所有桶都满了
-    		return true;
-    	}
-    	if(bucket == target) {
-    		return backtrack(k - 1, 0, nums, 0, used, target);
-    	}
-    	
-    	for(int i = start; i < nums.length; i++) {
-    		if(used[i]) {
-    			continue;
-    		}
-    		if(nums[i] + bucket > target) {
-    			continue;
-    		}
-    		used[i] = true;
-    		bucket += nums[i];
-    		if(backtrack(k, bucket, nums, i + 1, used, target)) {
-    			return true;
-    		}
-    		//撤销选择
-    		used[i] = false;
-    		bucket -= nums[i];
-    	}
-    	return false;
     }
     
 
