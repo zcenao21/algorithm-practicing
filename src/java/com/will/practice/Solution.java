@@ -139,30 +139,19 @@ public class Solution {
 
     }
 
-    public int minDistance(String word1, String word2) {
-        if(word1==null||word2==null||word1.length()==0||word2.length()==0){
-            if(word1==null||word2==null){
-                return 0;
-            }else if(word1==null){
-                return word2.length();
-            }else if(word2==null){
-                return word1.length();
+    public int longestCommonSubsequence(String text1, String text2) {
+        Map<Character, List<Integer>> map = new HashMap<>();
+        for(int i=0;i<text1.length();i++){
+            Character c = text1.charAt(i);
+            if(map.containsKey(c)){
+                List<Integer> list = map.get(c);
+                list.add(i);
+                map.put(c, list);
             }else{
-                return 0;
+                List<Integer> list = new LinkedList<>();
+                list.add(i);
+                map.put(c,list);
             }
-        }
-
-        // 确保word1更短
-        if(word1.length()>word2.length()){
-            String temp = word1;
-            word1=word2;
-            word2=temp;
-        }
-
-        Queue<String> q = new LinkedList<>();
-        q.add(word1);
-        while(q.size()>0){
-
         }
     }
     
