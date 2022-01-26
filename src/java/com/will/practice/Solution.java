@@ -1,11 +1,14 @@
 package com.will.practice;
 
 
+import org.w3c.dom.Element;
+
 import javax.swing.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,12 +16,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -96,7 +101,14 @@ public class Solution {
 //        List<List<Integer>> result = s.combinationSum(new int[]{1}, 1);
 //        boolean result = s.canPartitionKSubsets(new int[]{5,2,3,3,3,4}, 4);
 //        boolean result = s.canPartitionKSubsets(new int[]{605,454,322,218,8,19,651,2220,175,710,2666,350,252,2264,327,1843},4);
-        int result = s.minDistance("horse","ros");
+//        int result = s.longestCommonSubsequence("horse","ros");
+//        int result = s.longestCommonSubsequence("bsbininm","jmjkbkjkv");
+//        int result = s.longestCommonSubsequence("aaaaaaa","aaaa");
+//        int result = s.longestCommonSubsequence("abcd","abcdefg");
+//        int result = s.longestCommonSubsequence("acdeb","abcdefg");
+        int result = s.longestIncreasingPath(new int[][]{{3,4,5},{3,2,6},{2,2,1}});
+//        boolean result = s.canCross(new int[]{0,1,2,3,4,8,9,11});
+//        boolean result = s.canCross(new int[]{0,1});
         System.out.println(result);
 //        List<String> result = s.restoreIpAddresses("1111");
 //        List<String> result = s.restoreIpAddresses("0279245587303");
@@ -139,21 +151,35 @@ public class Solution {
 
     }
 
-    public int longestCommonSubsequence(String text1, String text2) {
-        Map<Character, List<Integer>> map = new HashMap<>();
-        for(int i=0;i<text1.length();i++){
-            Character c = text1.charAt(i);
-            if(map.containsKey(c)){
-                List<Integer> list = map.get(c);
-                list.add(i);
-                map.put(c, list);
-            }else{
-                List<Integer> list = new LinkedList<>();
-                list.add(i);
-                map.put(c,list);
-            }
+    class Element{
+        int i;
+        int j;
+        int ele;
+        public Element(int i,int j,int ele){
+            this.i=i;
+            this.j=j;
+            this.ele=ele;
         }
     }
-    
 
+    public int longestIncreasingPath(int[][] matrix) {
+        if(matrix==null||matrix.length<1) return 0;
+        int[][] maxInc = new int[matrix.length][matrix[0].length];
+        Queue<Element> elements=new PriorityQueue<>((e1, e2) -> {
+            if(e1.ele<e2.ele){
+                return -1;
+            }else{
+                return 1;
+            }
+        });
+        for(int i=0;i<matrix.length;i++){
+            for(int j=0;j<matrix.length;j++){
+                elements.add(new Element(i,j,matrix[i][j]));
+            }
+        }
+        while (elements.size()>0){
+            System.out.println(elements.poll().ele);
+        }
+        return 1;
+    }
 }
