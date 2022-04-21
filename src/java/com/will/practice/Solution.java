@@ -33,67 +33,97 @@ class TreeNode {
 }
 
 
+//给定两个大小分别为 m 和 n 的正序（从小到大）数组nums1 和nums2。请你找出并返回这两个正序数组的 中位数 。
+//
+//算法的时间复杂度应该为 O(log (m+n)) 。
+//
+//
+//
+//示例 1：
+//
+//输入：nums1 = [1,3], nums2 = [2]
+//输出：2.00000
+//解释：合并数组 = [1,2,3] ，中位数 2
+//示例 2：
+//
+//输入：nums1 = [1,2], nums2 = [3,4]
+//输出：2.50000
+//解释：合并数组 = [1,2,3,4] ，中位数 (2 + 3) / 2 = 2.5
+//
+//来源：力扣（LeetCode）
+//链接：https://leetcode-cn.com/problems/median-of-two-sorted-arrays
+//著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
 public class Solution implements Serializable {
     public static void main(String[] args) {
         Solution s = new Solution();
-//        List<Integer> result=s.findMinHeightTrees(4,new int[][]{{1,0},{1,2},{1,3}});
-//        List<Integer> result=s.findMinHeightTrees(6,new int[][]{{3,0},{3,1},{3,2},{3,4},{5,4}});
-//        List<Integer> result=s.findMinHeightTrees(4,new int[][]{{3,0},{3,1},{1,9},{3,2},{2,6},{6,8},{6,7},{3,4},{4,5},{4,10},{10,11}});
-//        List<Integer> result=s.findMinHeightTrees(1,new int[][]{});
-        List<Integer> result=s.findMinHeightTrees(2,new int[][]{{0,1}});
-        System.out.println(result);
+        
+        LRUCache cache = new LRUCache(2);
+        
     }
 
-    public List<Integer> findMinHeightTrees(int n, int[][] edges) {
-        if(n<=1){
-            List<Integer> result = new LinkedList<>();
-            result.add(0);
-            return  result;
-        }
-        Map<Integer, Set<Integer>> nodeAndNext = new HashMap<>();
-        for(int[] edge:edges){
-            int first = edge[0];
-            int second = edge[1];
-            Set<Integer> firstSet = nodeAndNext.containsKey(first)?nodeAndNext.get(first):new HashSet<>();
-            firstSet.add(second);
-            nodeAndNext.put(first,firstSet);
+}
 
-            Set<Integer> secondSet = nodeAndNext.containsKey(second)?nodeAndNext.get(second):new HashSet<>();
-            secondSet.add(first);
-            nodeAndNext.put(second,secondSet);
+class LRUCache {
+    class InnerEle{
+        Integer key;
+        Integer value;
+        InnerEle upper;
+        InnerEle next;
+        private InnerEle(Integer key, Integer value){
+            this.key=key;
+            this.value= value;
         }
-        Queue<Integer> q = new LinkedList<>();
-
-        List<Integer> result = new LinkedList<>();
-        // 得到只有叶节点
-        for(Map.Entry<Integer,Set<Integer>> node:nodeAndNext.entrySet()){
-            if(node.getValue().size()==1){
-                q.add(node.getKey());
-                result.add(node.getKey());
+    }
+    
+    int capacity=0,currSize=0;
+    InnerEle start=new InnerEle(0,0);
+    InnerEle last=start;
+    HashMap<Integer,InnerEle> map = new HashMap<>();
+    
+    public LRUCache(int capacity) {
+        this.capacity=capacity;
+    }
+    
+    public int get(int key) {
+        if(map.containsKey(key)){
+            InnerEle ele = map.get(key);
+            last=last==ele?last.upper:last;
+            
+            // 去掉原来的元素
+            ele.upper.next=ele.next;
+            move2First(ele);
+            return map.get(key).value;
+        }
+        return -1;
+    }
+    
+    public void put(int key, int value) {
+        if(map.containsKey(key)){
+            InnerEle ele = map.get(key);
+            last=last==ele?last.upper:last;
+            ele.upper.next=ele.next;
+            move2First(ele);
+            if(ele.value!=value){
+                ele.value=value;
+            }
+        }else{
+            InnerEle ele = new InnerEle(key,value);
+            move2First(ele);
+            if(++currSize>capacity){
+                last=last.upper;
+                last.next=null;
             }
         }
-        int size = q.size();
-        while(q.size()>0){
-            Integer curr = q.poll();
-            result.add(curr);
-
-            Set<Integer> currValue = nodeAndNext.get(curr);
-            for(Integer v:currValue){
-                Set<Integer> vNext = nodeAndNext.get(v);
-                vNext.remove(curr);
-                if(vNext.size()==1){
-                    q.add(v);
-                }
-            }
-
-            if(--size==0){
-                size = q.size();
-                if(size==0){
-                    return result;
-                }
-                result = new LinkedList<>();
-            }
-        }
-        return result;
+    }
+    
+    public void move2First(InnerEle ele){
+        InnerEle temp = start.next;
+        start.next=ele;
+        
+        ele.upper=start;
+        ele.next=temp;
+        
+        temp.upper=ele;
     }
 }
